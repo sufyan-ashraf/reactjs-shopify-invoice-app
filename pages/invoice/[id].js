@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { AnimatePresence } from 'framer-motion'
 import dayjs from 'dayjs'
+import { saveAs } from 'file-saver';
 
 import Wrapper from '../../components/invoice/Wrapper'
 import EditInvoiceForm from '../../components/form/EditInvoiceForm'
@@ -13,8 +14,8 @@ import InvoiceBody from '../../components/invoice/InvoiceBody'
 import InvoiceFooter from '../../components/invoice/InvoiceFooter'
 import { markAsPaid } from '../../utilities/Invoices'
 import { server } from '../../config';
-import jsPDFInvoiceTemplate, { OutputType, jsPDF } from "jspdf-invoice-template";
-
+import getConfig from 'next/config';
+const { serverRuntimeConfig } = getConfig();
 
 export default function Invoice({ invoices, setInvoices, handleDelete}) {
     const router = useRouter()
@@ -77,7 +78,6 @@ export default function Invoice({ invoices, setInvoices, handleDelete}) {
 
         invoice.line_items.forEach(async (element) => {
             let props = await getProps(element);
-            jsPDFInvoiceTemplate({...props, ...company_info})
         });
     }
 
@@ -115,7 +115,49 @@ export default function Invoice({ invoices, setInvoices, handleDelete}) {
 
 		let images = response_data.status == 'success' ? response_data.data : [];
 
+        const new_invoice = {
+            shipping: {
+              name: "Vendor",
+              address: item.vendor,
+              city: "",
+              state: "",
+              country: "",
+              postal_code: null
+            },
+            items: [
+              {
+                item: item.name,
+                description: "N/A",
+                quantity: item.quantity,
+                amount: parseFloat(inventory_data.data.cost) * parseInt(item.quantity)
+              }
+            ],
+            subtotal: parseFloat(inventory_data.data.cost) * parseInt(item.quantity),
+            paid: 0,
+            invoice_nr: invoice.order_number,
+            status:invoice.tags.split(",").pop(),
+            image: images.length>0? images[0].src : "https://raw.githubusercontent.com/edisonneza/jspdf-invoice-template/demo/images/logo.png",
+            date: dayjs(invoice.created_at).format('DD MMM YYYY')
+        };
+
+        const invoice_response = await fetch(`${server}/api/print-invoice`, {
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                'invoice': new_invoice,
+            })
+        });
+
+        console.log('invoice_response', invoice_response);
+        console.log('invoice_response', `${server}/invoice.pdf`);
+
+        saveAs(`${server}/invoice.pdf`,
+            "invoice.pdf");
         
+        return ;
         return {
             outputType: "save",
             returnJsPDFDocObject: true,

@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Avatar from '../shared/Avatar'
 import Logo from '../shared/Logo'
 import ThemeToggle from './ThemeToggle'
+import { userService } from './../../services';
 
 const Wrapper = styled.aside`
     position: sticky;
@@ -57,13 +58,17 @@ const Divider = styled.div`
     }
 `
 
+function logout() {
+    userService.logout();
+}
+
 export default function Sidebar({ toggleTheme }) {
     return (
         <Wrapper>
             <Logo className="sidebar-logo"/>
             <ThemeToggle className="sidebar-toggle-btn" toggleTheme={toggleTheme}/>
             <Divider/>
-            <Avatar className="sidebar-avatar"/>
+            <Avatar logout={logout} className="sidebar-avatar"/>
         </Wrapper>
     )
 }

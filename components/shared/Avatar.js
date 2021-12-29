@@ -20,7 +20,7 @@ const Image = styled.img`
     cursor: pointer;
 `
 
-export default function Avatar({ className }) {
+export default function Avatar({ logout, className }) {
     const [attributionIsOpen, setAttributionIsOpen] = useState(false)
 
     return (
@@ -33,7 +33,7 @@ export default function Avatar({ className }) {
                     />
                 }
             </AnimatePresence>
-            <Button className={className} onClick={() => setAttributionIsOpen(true)}>
+            <Button className={className} onClick={logout}>
                 <Image src="/images/image-avatar.png" alt="avatar"/>
             </Button>
         </>

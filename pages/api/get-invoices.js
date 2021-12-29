@@ -12,7 +12,7 @@ async function handler(req, res){
 
     // shopify.on('callLimits', (limits) => console.log(limits));
     shopify.order
-    .list({ limit: 100 })
+    .list({ limit: 1 })
     .then((orders) => {
         console.log('orders get')
         res.status(200).json({
