@@ -1,4 +1,4 @@
-# Invoice App - Frontend Mentor
+# Invoice App - Frontend
 
 ![Design preview for the Invoice app coding challenge](./public/preview.jpg)
 
@@ -6,7 +6,7 @@
 
 Hello, there! 👋
 
-Thank you for checking out my solution to the [invoice app challenge](https://www.frontendmentor.io/challenges/invoice-app-i7KaLTQjl) from Frontend Mentor. 😀
+Thank you for checking out my solution
 
 Feel free to look around and explore! 😉
 
